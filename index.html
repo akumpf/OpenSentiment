@@ -1,0 +1,459 @@
+
+<!DOCTYPE html> 
+<html>
+<head>
+<title>OpenSemanticParser</title>
+<meta charset='utf-8'>
+<!-- style --> 
+<style type="text/less">
+// --
+// A fun color palette from the ChaosCollective :)
+// --
+@White:   rgb(255, 255, 255);   //White
+@Base000: #F2F2F2;   //Light Gray
+@Base005: #e2e5e2;
+@Base025: rgb(190, 200, 200);   //Light Gray, shade
+@Base035: darken(@Base025, 10); 
+@Base050: rgb(115, 130, 130);   //Middle Gray
+@Base075: rgb(47, 51, 51);      //Dark Gray
+@Base100: rgb(27, 31, 31);      //Dark Gray, shade
+@Black:   rgb(0,0,0);           //Black
+//Yellow
+@A1:  rgb(252, 216, 33);
+@A1_: darken(@A1, 35%); 
+//Orange
+@A2:  rgb(255, 147, 30);
+@A2_: darken(@A2, 25%);
+//Green
+@A3:  rgb(33, 252, 128);
+@A3_: darken(@A3, 25%);
+//Red
+@A4:  rgb(219, 96, 96);
+@A4_: darken(@A4, 25%);
+//-------------------//
+//-- PRIMARY SET B --//
+//-------------------//
+//Blue
+@B1:  rgb(56, 169, 212);
+@B1_: darken(@B1, 25%);
+//Purple
+@B2:  rgb(219, 96, 182);
+@B2_: darken(@B2, 25%);
+// --
+* {
+	border: 0;
+}
+body {
+	margin: 0;
+	padding: 0;
+	background: #FFF;
+	color: @Base100;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+}
+#csvdrop, #csvinput {
+	position: absolute;
+	left: 5px;
+	top:  5px;
+	width: 320px;
+	height: 100px;
+	background: @White;
+	line-height: 100px;
+	text-align: center;
+	font-size: 16px;
+	color: @Base050;
+	z-index: 1;
+	cursor: pointer;
+	&:hover { 
+		outline: 2px dashed @Base100;
+		opacity: 0.1;
+	};
+}
+#csvinput {
+	z-index: 10;
+	opacity: 0.05;
+}
+#options {
+	position: absolute;
+	left: 10px;
+	width: 320px;
+	padding: 5px;
+	top: 10px;
+	height: 110px;
+	background: @White;
+	text-align: center;
+}
+#log {
+	position: absolute;
+	left: 10px;
+	top: 140px;
+	bottom: 50px;
+	width: 320px;
+	background: @Base000;
+	color: @Base050;
+	font-family: monospace;
+	line-height: 15px;
+	font-size: 12px;
+	padding: 5px;
+	padding-bottom: 20px;
+	overflow-y: scroll;
+	& .err {
+		color: @A4;
+	}
+	& .log2 {
+		color: @Base050;
+	}
+	& .log3 {
+		color: @Base000;
+	}
+}
+#logactions {
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+	width: 330px;
+	height: 39px;
+	line-height: 39px;
+	text-align: center;
+	background: @Base000;
+	color: @Base050;
+	border-top: 1px dashed #999;
+	span {
+		cursor: pointer;
+		color: #555;
+		font-weight: 600;
+		&:hover{color: black; text-decoration: underline;}
+	}
+}
+#output, #diveview {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 350px;
+	right: 10px;
+	color: @Base100;
+	overflow-y: scroll;
+}
+#topstats {
+	display: block;
+	position: relative;
+	max-width: 1024px;
+	overflow: hidden;
+	text-align: center;
+}
+#diveword {
+	display: block;
+	position: relative;
+	height: 0px;
+	border-bottom: 1px solid #EEE;
+	max-width: 1024px;
+	overflow: hidden;
+	text-align: center;
+	-webkit-transition: height 0.25s;
+	-moz-transition: height 0.25s;
+	transition: height 0.25s;
+	svg {margin: 10px;}
+}
+#divephrase, #dataexplorer {
+	display: block;
+	position: relative;
+	border-bottom: 1px solid #333;
+	max-width: 1024px;
+	overflow: hidden;
+	padding-bottom: 20px;
+	.phrasetitle {
+		font-size: 2em;
+		text-align: center;
+		line-height: 2.5em;
+		color: #F8A536;
+	}
+	.responsequote {
+		padding: 10px;
+		font-size: 12px;
+		font-weight: 200;
+		border-left: 5px solid #888;
+		padding-left: 20px;
+		// --
+		.highlight {display: inline-block; color: #F8A536; font-weight: 600;}
+		.question {
+			position: relative;
+			left: -10px;
+			font-weight: 600;
+		}
+		.meta {
+			position: relative;
+			text-align: right;
+			font-weight: 600;
+			opacity: 0.6;
+			.metaform {display: inline-block; margin-right: 20px;}
+			.metauser {display: inline-block; margin-right: 20px;}
+			.metadate {display: inline-block;}
+		}
+	}
+	.theresmore {
+		text-align: center;
+		font-size: 1.2em;
+		line-height: 60px;
+		cursor: pointer;
+		opacity: 0.6;
+		border-top: 1px dashed #777;
+		margin: 0 200px;
+		margin-top: 10px;
+		&:hover{opacity: 1;};
+	}
+}
+#dataexplorer {background: #DEF;}
+
+/*.opt {
+	display: inline-block;
+	text-align: left;
+	margin-right: 10px;
+	border-bottom: 1px solid @Base025;
+	margin-bottom: 3px;
+	& .opt_l {
+		display: inline-block;
+		position: relative;
+		width: 80px;
+		font-size: 10px;
+		color: @Base075;
+	}
+	& input[type=text] {
+		background: @Base000;
+		padding: 2px;
+		color: @B1;
+		cursor: text;
+		position: relative;
+		width: 60px;
+	}
+	&.wide {
+		& input[type=text] {
+			width: 218px;
+		}
+	}
+}*/
+.outsect {
+	padding: 5px;
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	margin: 5px;
+	max-width: 400px;
+	min-height: 220px;
+	min-width: 250px;
+	background:#FFF;
+	h2, h3 {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		text-align: center;
+		border-bottom: 1px solid rgba(0,0,0,0.25);
+	}
+	&.global {background: #FFE;}
+	&.stats {
+		display: block; position: relative; height: 80px; margin: 0; min-height: 0; padding: 0; max-width: 1024px; cursor: pointer;
+		border-bottom: 1px solid #EEE;
+		&:hover{background: #EEE;};
+		.outq_boxplot {
+			position: absolute;
+			width: 240px;
+			height: 80px;
+			right: 10px;
+			top: 0;
+		}
+		.question {
+			position: absolute;
+			left: 10px;
+			top: 0;
+			line-height: 80px;
+			font-size: 2.0em;
+			right: 370px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			color: #333;
+		}
+		.comment {
+			position: absolute;
+			left: 10px;
+			top: 58px;
+			line-height: 14px;
+			font-size: 13px;
+			right: 370px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			color: #333;
+		}
+		.mean {
+			position: absolute;
+			right: 270px;
+			top: 0;
+			line-height: 80px;
+			font-size: 2.0em;
+			width: 100px;
+			color: #59ABCE;
+			text-align: right;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.top5 {
+			position: absolute;
+			right: 10px;
+			top: 0;
+			padding-top: 1px;
+			line-height: 15px;
+			font-size: 13px;
+			width: 360px;
+			color: #A27BD3;
+			text-align: right;
+			.enumname {
+				position: relative;
+				padding-right: 160px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				span {color: #999;}
+			}
+			.enumoccur {
+				position: absolute;
+				right: 130px;
+				top: 0;
+				span {color: #666;}
+			}
+			.enumbar {
+				position: absolute;
+				right: 0;
+				width: 125px;
+				height: 12px;
+				top: 1px;
+				div {position: absolute;left: 0;top: 0;height:100%;width:50%;background: #A27BD3;}
+			}
+		}
+		.samples {
+			position: absolute;
+			right: 270px;
+			top: 50px;
+			line-height: 20px;
+			font-size: 14px;
+			width: 100px;
+			color: #555;
+			text-align: right;
+			span {opacity: 0.5; font-size: 12px;}
+		}
+		// --
+		&.qual {
+			.boxplot .stddev {fill: #F8A536;}
+			.mean {color: #F8A536;}
+		}
+		&.unknown {opacity: 0.5;}
+		&.enum {
+			
+		}
+	}
+	&.qual .num {color: rgb(248,165,54);}
+	.num {color: #59ABCE; font-weight: 600; padding: 0 3px; display: inline-block; position: relative; min-width: 25px; text-align: right;}
+	.num.p {color: #F8A536;}
+	.num.big {font-size: 3em;}
+	.phrase {
+		white-space: nowrap; overflow:hidden; text-overflow:ellipsis; display: inline-block; width: 33%; cursor: pointer;	text-align: left;
+		&:hover{background: #EEE;}
+	}
+	&.exploring, &.exploring:hover {
+		background: #DEF;
+	}
+	
+	// --
+	
+}
+// -- D3 --
+.boxplot {
+  font: 10px sans-serif;
+	display: block;
+	position: relative;
+	line, rect, circle {
+	  fill: #fff;
+	  stroke: #000;
+	  stroke-width: 1.5px;
+	}
+	.median {
+		stroke: #000;
+		stroke-width: 4px;
+	}
+	.stddev {fill: #59ABCE; stroke: none;}
+	.center {stroke-dasharray: 3,3; stroke: #555;}
+	.outlier {fill: none; stroke: #ccc;}
+	.whisker{
+		stroke: #555;
+	}
+	.meandot {fill: #000;}
+}
+.wordtree {
+	font: 14px sans-serif;
+	background: #FFF;
+	.selectable {
+		cursor: pointer; 
+		&:hover{
+			outline: 3px solid #CCC;outline-offset: 2px;
+		}
+	}
+	[issel=selected] {
+		.wordpath {stroke: #F8A536 !important;}
+	}
+	.midword{
+		cursor: pointer;
+		&:hover {
+			.midworddot {fill: #37A9DA;};
+		}
+		.midworddot {fill: #59ABCE;}
+		.midwordtxt {fill: #000; font-size: 20px; cursor-events: none;}
+	}
+	.wordcon {
+		cursor: pointer;
+		&:hover .wordpath {
+			opacity: 1;
+			stroke: #F8A536;
+		};
+		// --
+		.wordtxt {fill: #000;}
+		.wordtxt2 {fill: #666;}
+		.wordpath {
+			fill: none;
+			stroke: #CCC;
+			opacity: 0.6;
+			stroke-width: 30px;
+			stroke-linecap: round;
+		}
+	}
+}
+
+</style>
+<script>less = {env: "development"};</script>
+<script src="./libs/less-1.3.3.min.js" ></script>
+<!-- javascript libs -->
+<script src='./libs/jquery.min.js'></script>  
+<script src='./libs/underscore-min.js'></script>
+<script src='./libs/filesaver.min.js'></script>
+<script src='./libs/papaparse.min.js'></script>
+<script src='./libs/simple_statistics.js'></script>
+<script src='./libs/sentiment.js'></script>
+<script src='./libs/d3.min.js'></script>
+<script src='./libs/d3_hbox.js'></script>
+<!-- js main index -->
+<script src="./index.js"></script>
+</head>
+<body>
+	<div id='options'>
+		<div id='csvdrop'>Drop CSV File Here</div>
+		<input id='csvinput' type='file' onchange='csvFileLoad()' accept="text/html"/>
+	</div>
+	<div id='log'></div>
+	<div id='logactions'></div>
+	<div id='datanav'></div>
+	<div id='output'></div>
+	<div id='diveview' onclick='$(this).hide();'><div id='diveoutput' onclick='event.stopPropagation();'></div></div>
+</body>
+</html>
+
+
+

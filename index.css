@@ -1,0 +1,137 @@
+@White:   rgb(255, 255, 255);   //White
+@Base000: rgb(235, 240, 240);   //Light Gray
+@Base005: #e2e5e2;
+@Base025: rgb(190, 200, 200);   //Light Gray, shade
+@Base035: darken(@Base025, 10); 
+@Base050: rgb(115, 130, 130);   //Middle Gray
+@Base075: rgb(47, 51, 51);      //Dark Gray
+@Base100: rgb(27, 31, 31);      //Dark Gray, shade
+@Black:   rgb(0,0,0);           //Black
+//Yellow
+@A1:  rgb(252, 216, 33);
+@A1_: darken(@A1, 35%); 
+//Orange
+@A2:  rgb(255, 147, 30);
+@A2_: darken(@A2, 25%);
+//Green
+@A3:  rgb(33, 252, 128);
+@A3_: darken(@A3, 25%);
+//Red
+@A4:  rgb(219, 96, 96);
+@A4_: darken(@A4, 25%);
+//-------------------//
+//-- PRIMARY SET B --//
+//-------------------//
+//Blue
+@B1:  rgb(56, 169, 212);
+@B1_: darken(@B1, 25%);
+//Purple
+@B2:  rgb(219, 96, 182);
+@B2_: darken(@B2, 25%);
+// --
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+body {
+	background: @Base000;
+	color: @Base100;
+	font-family: Arial, sans-serif;
+	font-size: 13px;
+}
+#csvdrop, #csvinput {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width: 340px;
+	height: 50px;
+	background: @White;
+	line-height: 50px;
+	text-align: center;
+	font-size: 16px;
+	color: @Base050;
+	z-index: 1;
+	cursor: pointer;
+	&:hover { 
+		outline: 2px dashed @Base100;
+		opacity: 0.1;
+	};
+}
+#fileinput {
+	z-index: 10;
+	opacity: 0.05;
+}
+#options {
+	position: absolute;
+	left: 10px;
+	width: 330px;
+	padding: 5px;
+	top: 70px;
+	height: 110px;
+	background: @White
+}
+#log {
+	position: absolute;
+	left: 10px;
+	top: 200px;
+	bottom: 10px;
+	width: 330px;
+	background: @Base100;
+	color: @A3;
+	font-family: monospace;
+	font-size: 10px;
+	padding: 5px;
+	padding-bottom: 20px;
+	overflow-y: scroll;
+	& .err {
+		color: @A4;
+	}
+	& .log2 {
+		color: @Base050;
+	}
+	& .log3 {
+		color: @Base000;
+	}
+}
+#output {
+	position: absolute;
+	top: 10px;
+	bottom: 10px;
+	left: 360px;
+	right: 10px;
+	outline: 1px solid @Base025;
+	color: @Base100;
+	& iframe {
+		overflow-y: scroll;
+	}
+}
+.opt {
+	display: inline-block;
+	margin-right: 10px;
+	border-bottom: 1px solid @Base025;
+	margin-bottom: 3px;
+	& .opt_l {
+		display: inline-block;
+		position: relative;
+		width: 80px;
+		font-size: 10px;
+		color: @Base075;
+	}
+	& input[type=text] {
+		background: @Base000;
+		padding: 2px;
+		color: @B1;
+		cursor: text;
+		position: relative;
+		width: 60px;
+	}
+	&.wide {
+		& .opt_l {
+			width: 100px;
+		}
+		& input[type=text] {
+			width: 198px;
+		}
+	}
+}
