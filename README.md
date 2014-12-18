@@ -43,7 +43,7 @@ Once you drag in the data, it should process it and render something like this:
 
 ## Making Sense of the Data
 
-Currently, OpenSentiment only works for numerical and English language free text input. For text input, each response is given a sentiment value ranging from -1.0 to 1.0, showing how negative or positive it is. 
+Currently, OpenSentiment only works for numerical and English language free text input. For text input, each response is given a sentiment value ranging from -1.0 to 1.0, showing how negative or positive it is. See https://github.com/thisandagain/sentiment for more details on the base library and AFINN model that was used.
 
 All entries with a numeric value (either directly numeric or inferred via sentiment) can then be plotted via a box plot. This shows the median (dark vertical line near the center), lower and upper quartile quartile (the main colored box), as well as the minimum and maximum of all data. Extreme data is also accounted for and shows as outliers in light gray circles beyond the extremes when appropriate.
 
