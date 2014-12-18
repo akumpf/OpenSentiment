@@ -49,6 +49,17 @@ function scrollLogToBottom(){
 // --
 $(document).ready(function(){
 	log("Drop CSV file above...");
+	if(window.location.hash && window.location.hash.length > 1){
+		var urlToLoad = window.location.hash.substring(1);
+		log("Fetching CSV via URL...");
+		$.get(urlToLoad, function(a,b){
+			if(a && a.length > 0){
+				processCSV(a);
+			}else{
+				console.log(b);
+			}
+		})
+	}
 });
 // --
 // FormID,Date,UserID,Question,Response --- TYPE, SENTIMENT,
