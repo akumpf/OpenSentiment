@@ -16,26 +16,6 @@ window.toHTMLEntity = function(str) {
 }
 window.saveAs = window.saveAs || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs;
 // --
-function csvFileLoad(){
-	clearLog();
-	var files = $('#csvinput').get(0).files;
-	if(files.length > 0){
-		console.log(files[0]); 
-		log("Opening CSV file: "+files[0].name+", "+files[0].type);
-		if(files[0].type.toLowerCase().indexOf("csv") < 0){
-			return err("Bad file type (not CSV)");
-		}
-		getAsText(files[0], csvFileLoadedWithTxt);
-	}
-}
-function csvFileLoadedWithTxt(evt){
-	var fileString = evt.target.result||"";
-	log("File size: "+(fileString.length/1024.0).toFixed(2)+"kb");
-	// --
-	processCSV(fileString);
-}
-
-// --
 function log(msg){
 	msg = msg||"";
 	$("#log").append("<div>"+escapeHTML(msg)+"</div>");
@@ -67,20 +47,6 @@ function scrollLogToBottom(){
 	$("#log").scrollTop(999999);
 }
 // --
-var lastReadFile;
-function getAsText(readFile, loadedFn){
-	var reader = new FileReader();
-	reader.onload = loadedFn;
-	reader.readAsText(readFile); //, "windows-1252"); //, "UTF-8");
-	lastReadFile = readFile;
-}
-function getAsTextWithEncoding(encoding){
-	var reader = new FileReader();
-	reader.readAsText(lastReadFile, encoding); //, "windows-1252"); //, "UTF-8");
-	reader.onload = loaded2;
-}
-// --
-var p = [];
 $(document).ready(function(){
 	log("Waiting for CSV data...")
 });
@@ -109,6 +75,37 @@ var csvQuestions 	= {};
 // -------
 // CRUNCH THE DATA
 // -------
+var lastReadFile;
+function getAsText(readFile, loadedFn){
+	var reader = new FileReader();
+	reader.onload = loadedFn;
+	reader.readAsText(readFile); //, "windows-1252"); //, "UTF-8");
+	lastReadFile = readFile;
+}
+function getAsTextWithEncoding(encoding){
+	var reader = new FileReader();
+	reader.readAsText(lastReadFile, encoding); //, "windows-1252"); //, "UTF-8");
+	reader.onload = loaded2;
+}
+function csvFileLoad(){
+	clearLog();
+	var files = $('#csvinput').get(0).files;
+	if(files.length > 0){
+		console.log(files[0]); 
+		log("Opening CSV file: "+files[0].name+", "+files[0].type);
+		if(files[0].name.toLowerCase().indexOf("csv") < 0){
+			return err("Bad file type (not CSV)");
+		}
+		getAsText(files[0], csvFileLoadedWithTxt);
+	}
+}
+function csvFileLoadedWithTxt(evt){
+	var fileString = evt.target.result||"";
+	log("File size: "+(fileString.length/1024.0).toFixed(2)+"kb");
+	// --
+	processCSV(fileString);
+}
+
 function processCSV(csvtxt){
 	log("Ready to process.");
 	log("- - - - - - - - -");
