@@ -48,7 +48,7 @@ function scrollLogToBottom(){
 }
 // --
 $(document).ready(function(){
-	log("Waiting for CSV data...")
+	log("Drop CSV file above...");
 });
 // --
 // FormID,Date,UserID,Question,Response --- TYPE, SENTIMENT,
