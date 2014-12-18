@@ -105,7 +105,8 @@ function csvFileLoadedWithTxt(evt){
 	// --
 	processCSV(fileString);
 }
-
+// --
+var p = [];
 function processCSV(csvtxt){
 	log("Ready to process.");
 	log("- - - - - - - - -");
@@ -368,6 +369,7 @@ var QUALTYPE_TEXT 	 = "t/txt";
 var QUALTYPE_NUMBER  = "t/num";
 var QUALTYPE_ENUM    = "t/enu";
 // --
+
 p.push(["Type handling", function(){
 	var qualTypeForQs = {};
 	for(var i=0; i<csv.length; i++){
@@ -703,7 +705,7 @@ function getCleanHighlightedHTMLFromRText(rtxt, phrase){
 			
 				var highlightExtraLen = ("<div class='highlight'>"+"</div>").length;
 				var prevHShift = placedHighlights*highlightExtraLen;
-				console.log("Found original text! >> "+rtxtHTML.substring(start+prevHShift,end+prevHShift));
+				//console.log("Found original text! >> "+rtxtHTML.substring(start+prevHShift,end+prevHShift));
 				rtxtHTML = rtxtHTML.substring(0,start+prevHShift)+"<div class='highlight'>"+rtxtHTML.substring(start+prevHShift,end+prevHShift)+"</div>"+rtxtHTML.substring(end+prevHShift);
 				placedHighlights++;
 			}else{
@@ -984,7 +986,7 @@ function diveIntoPhrase(phrase, showall, dimword){
 	$("#diveword").css("height", dimword?"0px":"320px");
 	// --
 	var matchRows = getAllCSVRowsWithRText(phrase);
-	console.log("diving into phrase: "+phrase, matchRows);
+	//console.log("diving into phrase: "+phrase, matchRows);
 	// --
 	var html = "<div class='phrasetitle'>"+escapeHTML(phrase)+"</div>";
 	// --
