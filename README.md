@@ -3,6 +3,8 @@ OpenSentiment
 
 Open Sentiment is an open source web app that processes social data directly in the browse via javascript. Drag in a CSV file and watch your data come to life with interactive visualizations (using d3.js) and sentiment analysis (scoring free text as being positive/negative in nature).
 
+Try it out here: http://akumpf.github.io/OpenSentiment
+
 ## CSV Data Format
 
 OpenSentiment allows you to combine multiple streams of data into a single table by using a standardized structure that can span across multiple forms, users, questions/categories, and responses/data. 
