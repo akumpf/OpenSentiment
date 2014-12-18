@@ -63,6 +63,6 @@ The entire page is interactive, so click around and explore the data to find pat
 
 OpenSentiment is Licensed as Creative Commons 0 -- Public Domain except where otherwise noted (the libraries, for example, have their own terms). 
 
-Happy analizing!
+Happy analyzing!
 
 
