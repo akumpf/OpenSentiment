@@ -786,7 +786,7 @@ function htmlAllQs(){
 			html += "</div>";
 			break;
 		case QUALTYPE_ENUM:
-			html += "<div class='outsect stats enum' id='qdatasect_"+i+"'>";
+			html += "<div class='outsect stats enum' id='qdatasect_"+i+"' onclick='exploreQData("+i+");'>";
 			html += "<div id='outq_enum_"+i+"' class='outq_enum'></div>";
 			html += "<div class='question'>"+escapeHTML(q.q)+"</div>";
 			html += "<div class='top5'>";
@@ -1041,13 +1041,13 @@ function exploreQData(qindex, showall){
 	if(lastExploredIndex == qindex) return closeExplorerIfOpen();
 	closeExplorerIfOpen();
 	lastExploredIndex = qindex;
-	// --
+	// ----
 	if(qs.type == QUALTYPE_TEXT){
 		$("#qdatasect_"+qindex).addClass("exploring");
-		console.log(qs);
+		//console.log(qs);
 		var matchRows = getAllCSVRowsWithQ(qs.q);
 		var html = "<div id='dataexplorer'>";
-		html += "<div class='questiontitle'>"+escapeHTML(qs.q)+"</div>";
+		//html += "<div class='questiontitle'>"+escapeHTML(qs.q)+"</div>";
 		// --
 		console.log("Matching rows: "+matchRows.length);
 		var maxtoshow = showall?99999:7;
@@ -1076,8 +1076,31 @@ function exploreQData(qindex, showall){
 		}
 		// --
 		html += "</div>";
-		console.log("adding HTML");
 		$(html).insertAfter("#qdatasect_"+qindex);
+	}
+	// ----
+	if(qs.type == QUALTYPE_ENUM){
+		$("#qdatasect_"+qindex).addClass("exploring");
+		console.log(qs);
+		// --
+		var html = "<div id='dataexplorer'>";
+		// --
+		html += "<div class='enums'>";
+		var enums = qs.enums||[];
+		for(var i=0; i<enums.length; i++){
+			var occurs = ((enums[i]||{}).o||0);
+			if(occurs > 0){
+				html += "<div class='enumname'>"+((qs.enums[i]||{}).n||"---")+
+					"<div class='enumoccur'>"+occurs+"</div>"+
+					"<div class='enumbar'><div style='width:"+(100*occurs / qs.drawmax)+"%'></div></div>"+
+					"</div>";
+			}
+		}
+		html += "</div>";
+		// --
+		html += "</div>";
+		$(html).insertAfter("#qdatasect_"+qindex);
+		// --
 	}
 }
 

@@ -202,7 +202,37 @@ body {
 		&:hover{opacity: 1;};
 	}
 }
-#dataexplorer {background: #DEF;}
+#dataexplorer {
+	background: #DEF;
+	.enums{
+		padding-top: 15px;
+		text-align: right;
+		line-height: 25px;
+		font-size: 18px;
+		.enumname {
+			position: relative;
+			padding-right: 60%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			span {color: #999;}
+		}
+		.enumoccur {
+			position: absolute;
+			right: 56%;
+			top: 0;
+			span {color: #666;}
+		}
+		.enumbar {
+			position: absolute;
+			right: 5%;
+			width: 50%;
+			height: 22px;
+			top: 1px;
+			div {position: absolute;left: 0;top: 0;height:100%;width:50%;background: #A27BD3;}
+		}
+	}
+}
 
 /*.opt {
 	display: inline-block;
