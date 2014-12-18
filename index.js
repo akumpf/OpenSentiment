@@ -887,12 +887,6 @@ function d3Viz_BoxPlots(){
 				.call(chart);
 }
 // --
-// function openDiveView(){
-// 	$("#diveview").show();
-// }
-// function closeDiveView(){
-// 	$("#diveview").hide();
-// }
 function onD3WordSel(el){
 	$("#diveword svg [issel=selected]").attr("issel",null);
 	$(el).attr("issel","selected");
