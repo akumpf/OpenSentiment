@@ -48,7 +48,6 @@ function scrollLogToBottom(){
 }
 // --
 $(document).ready(function(){
-	log("Drop CSV file above...");
 	if(window.location.hash && window.location.hash.length > 1){
 		var urlToLoad = window.location.hash.substring(1);
 		log("Fetching CSV via URL...");
@@ -57,8 +56,11 @@ $(document).ready(function(){
 				processCSV(a);
 			}else{
 				console.log(b);
+				log("Drop CSV file above...");
 			}
 		})
+	}else{
+		log("Drop CSV file above...");
 	}
 });
 // --
