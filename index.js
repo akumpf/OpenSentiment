@@ -811,7 +811,7 @@ function htmlAllQs(){
 			html += "</div>";
 			break;
 		default:
-			html += "<div class='outsect stats"+(q.type==QUALTYPE_TEXT?" qual":"")+"' id='qdatasect_"+i+"' onclick='exploreQData("+i+");'>";
+			html += "<div class='outsect stats"+(q.type==QUALTYPE_TEXT?" qual":" numeric")+"' id='qdatasect_"+i+"' onclick='exploreQData("+i+");'>";
 			html += "<div id='outq_boxplot_"+i+"' class='outq_boxplot'></div>";
 			html += "<div class='question'>"+escapeHTML(q.q)+"</div>";
 			html += "<div class='mean'>"+q.mean.toFixed(2)+"</div>";
