@@ -420,7 +420,7 @@ var phraser = (function(){
 		// time
 		"second":1, "minute":1, "hour":1, "day":1, "week":1, "month":1, "year":1,
 		// contractions
-		"i'm":1, "you're":1, "don't":1, "doesn't":1, "didn't":1, "can't":1, "won't":1, "isn't":1, "hasn't":1, "it's":1, "i've":1, "i'd":1, 
+		"i'm":1, "you're":1, "don't":1, "doesn't":1, "didn't":1, "can't":1, "won't":1, "isn't":1, "hasn't":1, "wasn't":1, "it's":1, "i've":1, "i'd":1, "we'd":1, 
 		// other common words
 		"more":1, "less":1, "most":1, "least":1, "able":1, "unable":1, "very":1, "much":1, "seem":1, "seems":1, "try":1, "trying":1, "tried":1, "make":1, "made":1, "making":1, "just":1, "should":1, "also":1, "really":1, "thought":1, "put":1, "way":1, "set":1, "lot":1, "little":1, "new":1, "old":1, "always":1, "never":1, "high":1, "low":1, "always":1, "never":1, "pre":1, "post":1,
 		// jargon that feels empty and overused
@@ -481,7 +481,7 @@ var phraser = (function(){
 		befarr.sort(function(a,b){return b.o-a.o;});
 		return befarr;
 	}
-	exports.findWordsAfter = function(wordsarray, rootword, maxkeepers){
+	exports.findWordsAfter  = function(wordsarray, rootword, maxkeepers){
 		var before = {};
 		for(var i=0; i<wordsarray.length-1; i++){
 			if(wordsarray[i] == rootword){
