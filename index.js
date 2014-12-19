@@ -417,10 +417,14 @@ var phraser = (function(){
 		"all":1, "an":1, "another":1, "any":1, "both":1, "each":1, "either":1, "every":1, "her":1, "his":1, "its":1, "my":1, "neither":1, "no":1, "other":1, "our":1, "per":1, "some":1, "that":1, "the":1, "their":1, "these":1, "this":1, "those":1, "whatever":1, "whichever":1, "your":1, "all":1, "another":1, "any":1, "anybody":1, "anyone":1, "anything":1, "both":1, "each":1, "each other":1, "either":1, "everybody":1, "everyone":1, "everything":1, "few":1, "he":1, "her":1, "hers":1, "herself":1, "him":1, "himself":1, "his":1, "i":1, "it":1, "its":1, "itself":1, "many":1, "me":1, "mine":1, "my":1, "myself":1, "neither":1, "noone":1, "nobody":1, "none":1, "nothing":1, "one":1, "one another":1, "other":1, "ours":1, "ourselves":1, "several":1, "she":1, "some":1, "somebody":1, "someone":1, "something":1, "such":1, "that":1, "theirs":1, "them":1, "themselves":1, "these":1, "they":1, "this":1, "those":1, "us":1, "we":1, "what":1, "whatever":1, "which":1, "whichever":1, "who":1, "whoever":1, "whom":1, "whomever":1, "whose":1, "you":1, "yours":1, "yourself":1, "yourselves":1, 
 		// places
 		"here":1, "there":1, "nowhere":1, "everywhere":1, "end":1, "beginning":1,
+		// time
+		"second":1, "minute":1, "hour":1, "day":1, "week":1, "month":1, "year":1,
 		// contractions
 		"i'm":1, "you're":1, "don't":1, "doesn't":1, "didn't":1, "can't":1, "won't":1, "isn't":1, "hasn't":1, "it's":1, "i've":1, "i'd":1, 
 		// other common words
-		"more":1, "less":1, "most":1, "least":1, "able":1, "unable":1, "very":1, "much":1, "seem":1, "seems":1, "try":1, "trying":1, "tried":1, "make":1, "made":1, "making":1, "just":1, "should":1, "also":1, "really":1, "thought":1, "put":1, "way":1, "set":1, "lot":1, "little":1,
+		"more":1, "less":1, "most":1, "least":1, "able":1, "unable":1, "very":1, "much":1, "seem":1, "seems":1, "try":1, "trying":1, "tried":1, "make":1, "made":1, "making":1, "just":1, "should":1, "also":1, "really":1, "thought":1, "put":1, "way":1, "set":1, "lot":1, "little":1, "new":1, "old":1, "always":1, "never":1, "high":1, "low":1, "always":1, "never":1, "pre":1, "post":1,
+		// jargon that feels empty and overused
+		"app":1, "apps":1,
 	};
 	exports.commonNoninterestingWords = commonNoninterestingWords;
 	// --
@@ -1182,28 +1186,34 @@ function exploreQData(qindex, showall){
 		// --
 		//console.log("Matching rows: "+matchRows.length);
 		var maxtoshow = showall?99999:7;
-		var i = 0;
-		for(i=0; i<matchRows.length && i<maxtoshow; i++){
+		var i     = 0;
+		var shown = 0;
+		for(i=0; i<matchRows.length && shown<maxtoshow; i++){
 			var d = csv[matchRows[i]][CSV_INDEX_DATE];
 			// --
 			if(csv[matchRows[i]][CSV_INDEX_CALC_TYPE] == QUALTYPE_TEXT){
 				var s = csv[matchRows[i]][CSV_INDEX_CALC_SENTIMENT]||0;
-				var hue = Math.min(90, Math.max(0, 45 + s*500));
-				var sat = Math.min(100, Math.max(15, 15 + Math.abs(s)*500));
-				var sentimentColor = "hsl("+hue+","+sat+"%,48%)";
-		 		html += "<div class='responsequote' style='border-color:"+sentimentColor+";'>";
-		 		html += 	"<div class='question' title='question'>"+escapeHTML(csv[matchRows[i]][CSV_INDEX_Q])+"</div>";
-		 		html += 	getCleanHighlightedHTMLFromRText(csv[matchRows[i]][CSV_INDEX_R], "");
-		 		html += 	"<div class='meta'>";
-		 		html += 		"<div class='metaform' title='form'>"+escapeHTML(csv[matchRows[i]][CSV_INDEX_FORM])+"</div>";
-		 		html +=			"<div class='metauser' title='user'>"+escapeHTML(csv[matchRows[i]][CSV_INDEX_USER])+"</div>";
-		 		html += 		"<div class='metadate' title='date'>"+MONTHS[d.getMonth()]+". "+d.getDate()+", "+d.getFullYear()+"</div>";
-		 		html += 	"</div>";
-		 		html += "</div>";
+				if(s > -10){
+					// --
+					var hue = Math.min(90, Math.max(0, 45 + s*500));
+					var sat = Math.min(100, Math.max(15, 15 + Math.abs(s)*500));
+					var sentimentColor = "hsl("+hue+","+sat+"%,48%)";
+			 		html += "<div class='responsequote' style='border-color:"+sentimentColor+";'>";
+			 		html += 	"<div class='question' title='question'>"+escapeHTML(csv[matchRows[i]][CSV_INDEX_Q])+"</div>";
+			 		html += 	getCleanHighlightedHTMLFromRText(csv[matchRows[i]][CSV_INDEX_R], "");
+			 		html += 	"<div class='meta'>";
+			 		html += 		"<div class='metaform' title='form'>"+escapeHTML(csv[matchRows[i]][CSV_INDEX_FORM])+"</div>";
+			 		html +=			"<div class='metauser' title='user'>"+escapeHTML(csv[matchRows[i]][CSV_INDEX_USER])+"</div>";
+			 		html += 		"<div class='metadate' title='date'>"+MONTHS[d.getMonth()]+". "+d.getDate()+", "+d.getFullYear()+"</div>";
+			 		html += 	"</div>";
+			 		html += "</div>";
+					// --
+					shown++;
+				}
 			}
 		}
 		if(i < matchRows.length){
-		 	html += "<div class='theresmore' onclick='lastExploredIndex=-1; exploreQData("+qindex+", true);'>+ "+(matchRows.length-i)+" more responses...</div>";
+		 	html += "<div class='theresmore' onclick='lastExploredIndex=-1; exploreQData("+qindex+", true);'>+ "+(csvStats.qs[qs.q].len-shown)+" more responses...</div>";
 		}
 		// --
 		html += "</div>";
