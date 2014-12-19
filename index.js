@@ -1152,6 +1152,8 @@ function diveIntoPhrase(phrase, showall, dimword){
 	}
 	// --
 	$("#divephrase").html(html);
+	// --
+	closeExplorerIfOpen();
 }
 var lastExploredIndex = -1;
 function closeExplorerIfOpen(){
