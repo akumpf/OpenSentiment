@@ -49,7 +49,7 @@ function scrollLogToBottom(){
 // --
 function wrapInQuotesForCSV(txt){
 	txt = txt||"";
-	console.log(txt);
+	//console.log(txt);
 	txt = txt.replace(/\\"/g, "'");
 	txt = txt.replace(/[\r\n]/g, " | ");
 	return '"'+txt+'"';
@@ -67,7 +67,7 @@ function autoParseData_iOS(data, logname){
 			var ent = entries[e];
 			if(e==0 && ent["im:name"] && ent["im:name"].label){
 				appname = ent["im:name"].label+" ";
-				if(logname) log("App name is: "+appname);
+				if(logname) log("-> "+appname);
 			}
 			if(ent && ent.content){
 				var form = '"Ver. ?"';
@@ -125,31 +125,42 @@ $(document).ready(function(){
 								var appid = da[i];
 								log("APP ID: "+appid)
 								var url0 = "https://itunes.apple.com/us/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
-								var url1 = "https://itunes.apple.com/uk/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
+								var url1 = "https://itunes.apple.com/gb/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
 								var url2 = "https://itunes.apple.com/au/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
 								var url3 = "https://itunes.apple.com/ca/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
+								var url4 = "https://itunes.apple.com/in/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
 								// --
 								var added = 0;
 								$.getJSON(url0, function(data, status, jqXHR){
+									//console.log("url0:"+JSON.stringify(data).length);
 									var newcsv = autoParseData_iOS(data, true); 
 									added += Math.max(0, (newcsv.split("\n")||[]).length-1); 
 									tmpcsv += newcsv;
 									$.getJSON(url1, function(data, status, jqXHR){
+										//console.log("url1:"+JSON.stringify(data).length);
 										var newcsv = autoParseData_iOS(data); 
 										added += Math.max(0, (newcsv.split("\n")||[]).length-1); 
 										tmpcsv += newcsv;
 										$.getJSON(url2, function(data, status, jqXHR){
+											//console.log("url2:"+JSON.stringify(data).length);
 											var newcsv = autoParseData_iOS(data); 
 											added += Math.max(0, (newcsv.split("\n")||[]).length-1); 
 											tmpcsv += newcsv;
 											$.getJSON(url3, function(data, status, jqXHR){
+												//console.log("url3:"+JSON.stringify(data).length);
 												var newcsv = autoParseData_iOS(data); 
 												added += Math.max(0, (newcsv.split("\n")||[]).length-1); 
-												tmpcsv += newcsv;	
-												// --
-												log(" -> "+added+" entries.");
-												i++;
-												loop();
+												tmpcsv += newcsv;
+												 $.getJSON(url4, function(data, status, jqXHR){
+													//console.log("url4:"+JSON.stringify(data).length);
+ 													var newcsv = autoParseData_iOS(data);
+ 													added += Math.max(0, (newcsv.split("\n")||[]).length-1);
+ 													tmpcsv += newcsv;	
+													// --
+													log(" -> "+added+" entries.");
+													i++;
+													loop();
+												});
 											});
 										});
 									});
