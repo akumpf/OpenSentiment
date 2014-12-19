@@ -124,7 +124,7 @@ $(document).ready(function(){
 							if(i < da.length){
 								var appid = da[i];
 								log("APP ID: "+appid)
-								var url0 = "https://itunes.apple.com/us/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
+								var url0 = "https://itunes.apple.com/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
 								var url1 = "https://itunes.apple.com/gb/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
 								var url2 = "https://itunes.apple.com/au/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
 								var url3 = "https://itunes.apple.com/ca/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";

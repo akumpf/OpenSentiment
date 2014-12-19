@@ -30,7 +30,7 @@ d3.hbox = function() {
 				for(var q=0; q<d.length; q++) mean+=d[q];
 				mean = mean/d.length;
 			}
-			console.log(mean);
+			//console.log(mean);
 			d.mean = mean;
 
       // Compute whiskers. Must return exactly 2 elements, or null.
