@@ -67,6 +67,7 @@ function autoParseData_iOS(data){
 			var ent = entries[e];
 			if(e==0 && ent["im:name"] && ent["im:name"].label){
 				appname = ent["im:name"].label+" ";
+				log("App name is: "+appname);
 			}
 			if(ent && ent.content){
 				var form = '"Ver. ?"';
