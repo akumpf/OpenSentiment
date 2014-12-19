@@ -361,6 +361,7 @@ body {
 	.phrase {
 		white-space: nowrap; overflow:hidden; text-overflow:ellipsis; display: inline-block; width: 33%; cursor: pointer;	text-align: left;
 		&:hover{background: #EEE;}
+		&.narrow {width: 25%;}
 	}
 	&.exploring, &.exploring:hover {
 		background: #DEF;
@@ -454,7 +455,6 @@ body {
 	<div id='logactions'></div>
 	<div id='datanav'></div>
 	<div id='output'></div>
-	<div id='diveview' onclick='$(this).hide();'><div id='diveoutput' onclick='event.stopPropagation();'></div></div>
 </body>
 </html>
 

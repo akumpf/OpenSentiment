@@ -860,9 +860,9 @@ function htmlGetLogActions(){
 // --
 function htmlTopWords(){
 	var html = "<div class='outsect'><h2>Top Words</h2>";
-	for(var i=0; i<30 && i<csvStats.wordFreq.length; i++){
+	for(var i=0; i<40 && i<csvStats.wordFreq.length; i++){
 		var obj = csvStats.wordFreq[i];
-		html += "<div class='phrase' onclick='diveIntoWord(\""+obj.t.replace(/\'/g,"&apos;")+"\");'><span class='num'>"+obj.o+"</span> "+escapeHTML(obj.t)+"</div>";
+		html += "<div class='phrase narrow' onclick='diveIntoWord(\""+obj.t.replace(/\'/g,"&apos;")+"\");'><span class='num'>"+obj.o+"</span> "+escapeHTML(obj.t)+"</div>";
 	}
 	html += "</div>";
 	return html;
