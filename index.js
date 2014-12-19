@@ -663,7 +663,7 @@ function getAllCSVRowsWithQ(q){
 			matchingRows.push(i);
 		}
 	}
-	console.log(matchingRows);
+	//console.log(matchingRows);
 	return matchingRows;
 }
 function getCleanHighlightedHTMLFromRText(rtxt, phrase){
@@ -1035,7 +1035,7 @@ function closeExplorerIfOpen(){
 	lastExploredIndex = -1;
 }
 function exploreQData(qindex, showall){
-	console.log("Explore data... "+qindex);
+	//console.log("Explore data... "+qindex);
 	var qs = csvStats.qsArr[qindex];
 	// --
 	if(lastExploredIndex == qindex) return closeExplorerIfOpen();
@@ -1049,7 +1049,7 @@ function exploreQData(qindex, showall){
 		var html = "<div id='dataexplorer'>";
 		//html += "<div class='questiontitle'>"+escapeHTML(qs.q)+"</div>";
 		// --
-		console.log("Matching rows: "+matchRows.length);
+		//console.log("Matching rows: "+matchRows.length);
 		var maxtoshow = showall?99999:7;
 		var i = 0;
 		for(i=0; i<matchRows.length && i<maxtoshow; i++){
@@ -1081,7 +1081,7 @@ function exploreQData(qindex, showall){
 	// ----
 	if(qs.type == QUALTYPE_ENUM){
 		$("#qdatasect_"+qindex).addClass("exploring");
-		console.log(qs);
+		//console.log(qs);
 		// --
 		var html = "<div id='dataexplorer'>";
 		// --
