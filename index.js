@@ -1038,6 +1038,10 @@ function exploreQData(qindex, showall){
 	//console.log("Explore data... "+qindex);
 	var qs = csvStats.qsArr[qindex];
 	// --
+	// close the word viewer and phrase viewer when using the data explorer.
+	$("#diveword").css("height", "0px");
+	$("#divephrase").html("");
+	// --
 	if(lastExploredIndex == qindex) return closeExplorerIfOpen();
 	closeExplorerIfOpen();
 	lastExploredIndex = qindex;
