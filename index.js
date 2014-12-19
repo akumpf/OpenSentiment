@@ -54,7 +54,7 @@ function wrapInQuotesForCSV(txt){
 	txt = txt.replace(/[\r\n]/g, " | ");
 	return '"'+txt+'"';
 }
-function autoParseData_iOS(data){
+function autoParseData_iOS(data, logname){
 	var tmp = "";
 	if(data && data.feed && data.feed.entry){
 		var entries = data.feed.entry||[];
@@ -67,7 +67,7 @@ function autoParseData_iOS(data){
 			var ent = entries[e];
 			if(e==0 && ent["im:name"] && ent["im:name"].label){
 				appname = ent["im:name"].label+" ";
-				log("App name is: "+appname);
+				if(logname) log("App name is: "+appname);
 			}
 			if(ent && ent.content){
 				var form = '"Ver. ?"';
@@ -124,34 +124,6 @@ $(document).ready(function(){
 							if(i < da.length){
 								var appid = da[i];
 								log("APP ID: "+appid)
-								var url = "https://itunes.apple.com/us/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
-								// --
-								var added = 0;
-								$.getJSON(url, function(data, status, jqXHR){
-									var newcsv = autoParseData_iOS(data); 
-									added += Math.max(0, (newcsv.split("\n")||[]).length-1); 
-									tmpcsv += newcsv;	
-									// --
-									log(" -> "+added+" entries.");
-									i++;
-									loop();
-								});
-							}else{
-								log("DONE -- Fetched all data.");
-								processCSV(tmpcsv);
-							}
-						}
-						loop();
-					})();
-					break;
-				case "ios:en":
-					log("Getting iOS App Reviews [x"+(da.length-1)+"]");
-					(function(){
-						var i=1;
-						function loop(){
-							if(i < da.length){
-								var appid = da[i];
-								log("APP ID: "+appid)
 								var url0 = "https://itunes.apple.com/us/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
 								var url1 = "https://itunes.apple.com/uk/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
 								var url2 = "https://itunes.apple.com/au/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
@@ -159,7 +131,7 @@ $(document).ready(function(){
 								// --
 								var added = 0;
 								$.getJSON(url0, function(data, status, jqXHR){
-									var newcsv = autoParseData_iOS(data); 
+									var newcsv = autoParseData_iOS(data, true); 
 									added += Math.max(0, (newcsv.split("\n")||[]).length-1); 
 									tmpcsv += newcsv;
 									$.getJSON(url1, function(data, status, jqXHR){

@@ -64,7 +64,7 @@ To load a URL (from the same domain), just include it after the hash and make su
 http://akumpf.github.io/OpenSentiment/#./example_csv_data/fiddlewax_app_reviews.csv
 
 
-To load from a specialized JSON source, use a comma separated list in the hash. Currently only iOS reviews are supported, but that could be easily expanded. For iOS, most but not all ratings seem to appear. Loading reviews for specific iOS apps is simple -- just use the hash #ios,APP_ID_1,APP_ID_2,...
+To load from a specialized JSON source, use a comma separated list in the hash. Currently only iOS reviews are supported, but that could be easily expanded. Loading reviews for specific iOS apps is simple -- just use the hash #ios,APP_ID_1,APP_ID_2,...
 
 http://akumpf.github.io/OpenSentiment/#ios,814998374,866070342,905878913
 
