@@ -47,18 +47,111 @@ function scrollLogToBottom(){
 	$("#log").scrollTop(999999);
 }
 // --
+function wrapInQuotesForCSV(txt){
+	txt = txt||"";
+	console.log(txt);
+	txt = txt.replace(/\\"/g, "'");
+	txt = txt.replace(/[\r\n]/g, " | ");
+	return '"'+txt+'"';
+}
+function autoParseData_iOS(data){
+	var tmp = "";
+	if(data && data.feed && data.feed.entry){
+		var entries = data.feed.entry||[];
+		var appname = "";
+		var date 		= "2000-01-01";
+		if(data.feed.updated && data.feed.updated.label){
+			date = wrapInQuotesForCSV(data.feed.updated.label);
+		}
+		for(var e=0; e<entries.length; e++){
+			var ent = entries[e];
+			if(e==0 && ent["im:name"] && ent["im:name"].label){
+				appname = ent["im:name"].label+" ";
+			}
+			if(ent && ent.content){
+				var form = '"Ver. ?"';
+				if(ent["im:version"] && ent["im:version"].label){
+					form = wrapInQuotesForCSV("Ver. "+ent["im:version"].label);
+				}
+				// TODO: include DATE here if we have the data (doesn't seem to exist in the JSON?)
+				var user = wrapInQuotesForCSV(((ent.author||{}).name||{}).label||"---");
+				var q    = wrapInQuotesForCSV(appname+"Review");
+				var r0   = (ent.title||{}).label||"";
+				var r1   = (ent.content||{}).label||"";
+				var r    = wrapInQuotesForCSV(r0+" | "+r1);
+				tmp += form+","+date+","+user+","+q+","+r+"\n";
+				// --
+				if(ent["im:rating"] && ent["im:rating"].label){
+					var rating = parseFloat(ent["im:rating"].label);
+					if(!isNaN(rating)){
+						var q    = wrapInQuotesForCSV(appname+"Rating");
+						tmp += form+","+date+","+user+","+q+","+rating+"\n";
+					}
+				}
+			}
+		}
+	}
+	return tmp;
+}
+// --
 $(document).ready(function(){
-	if(window.location.hash && window.location.hash.length > 1){
-		var urlToLoad = window.location.hash.substring(1);
-		log("Fetching CSV via URL...");
-		$.get(urlToLoad, function(a,b){
-			if(a && a.length > 0){
-				processCSV(a);
+	var hash = window.location.hash;
+	if(hash && hash.length > 1){
+		if(hash.indexOf("/") >= 0){
+			log("Fetching CSV via URL...");
+			var urlToLoad = hash.substring(1);
+			$.get(urlToLoad, function(a,b){
+				if(a && a.length > 0){
+					processCSV(a);
+				}else{
+					console.log(b);
+					log("Drop CSV file above...");
+				}
+			});
+		}else{
+			log("Fetching Realtime JSON...");
+			var d = hash.substring(1);
+			var da = d.split(",");
+			var tmpcsv = "Form,Date,User,Q,R\n";
+			if(da && da.length > 1){
+				switch(da[0].toLowerCase()){
+				case "ios":
+					log("Getting iOS App Reviews [x"+(da.length-1)+"]");
+					(function(){
+						var i=1;
+						function loop(){
+							if(i < da.length){
+								var appid = da[i];
+								log("APP ID: "+appid)
+								var url = "https://itunes.apple.com/rss/customerreviews/id="+appid+"/sortBy=mostRecent/json";
+								$.getJSON(url, function(data, status, jqXHR){
+									var newcsv = autoParseData_iOS(data);
+									var added  = Math.max(0, (newcsv.split("\n")||[]).length-1);
+									tmpcsv += newcsv;
+									log(" -> "+added+" entries.");
+									// --
+									i++;
+									loop();
+								});
+							}else{
+								log("DONE -- Fetched all data.");
+								processCSV(tmpcsv);
+							}
+						}
+						loop();
+					})();
+					break;
+				default:
+					err("Unrecognized json type: "+da[0]);
+					log("Drop CSV file above...");
+				}
+				//var urlToLoad = hash.substring(1);
+				//https://itunes.apple.com/rss/customerreviews/id=814998374/json
 			}else{
-				console.log(b);
+				err("Couldn't make sense of hash: "+hash);
 				log("Drop CSV file above...");
 			}
-		})
+		}
 	}else{
 		log("Drop CSV file above...");
 	}
