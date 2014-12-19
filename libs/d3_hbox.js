@@ -24,6 +24,14 @@ d3.hbox = function() {
 
       // Compute quartiles. Must return exactly 3 elements.
       var quartileData = d.quartiles = quartiles(d);
+			
+			var mean = 0;
+			if(d.length > 0){
+				for(var q=0; q<d.length; q++) mean+=d[q];
+				mean = mean/d.length;
+			}
+			console.log(mean);
+			d.mean = mean;
 
       // Compute whiskers. Must return exactly 2 elements, or null.
       var whiskerIndices = whiskers && whiskers.call(this, d, i),
@@ -105,22 +113,22 @@ d3.hbox = function() {
 
 	      // Update mean dot.
 	      var meanDot = g.selectAll("circle.meandot")
-	          .data([quartileData]);
+	          .data([d.mean]);
 
 	      meanDot.enter().append("circle")
 	        .attr("class", "meandot")
 	        .attr("r", 4)
-	        .attr("cx", function(d) { return width - x0(d[0]) + (x0(d[0]) - x0(d[2]))/2; })
+					.attr("cx", function(d) { return width - x0(d);}) //- x0(d[0]) + (x0(d[0]) - x0(d[2]))/2; })
 	        .attr("cy", height / 2)
 	        .style("opacity", 1e-6)
 	      .transition()
 	        .duration(duration)
-	        .attr("cx", function(d) { return width - x1(d[0]) + (x1(d[0]) - x1(d[2]))/2; })
+	        .attr("cx", function(d) { return width - x1(d);}) //- x1(d[0]) + (x1(d[0]) - x1(d[2]))/2; })
 	        .style("opacity", 1);
 
 	      meanDot.transition()
           .duration(duration)
-          .attr("cx", function(d) { return width - x1(d[0]) + (x1(d[0]) - x1(d[2]))/2; })
+          .attr("cx", function(d) { return width - x1(d);}) //- x1(d[0]) + (x1(d[0]) - x1(d[2]))/2; })
           .style("opacity", 1);
 
       // Update median line.
