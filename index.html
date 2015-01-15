@@ -54,9 +54,9 @@ body {
 }
 #csvdrop, #csvinput {
 	position: absolute;
-	left: 5px;
-	top:  5px;
-	width: 320px;
+	left: 0px;
+	top:  1px;
+	width: 330px;
 	height: 100px;
 	background: @White;
 	line-height: 100px;
@@ -74,6 +74,15 @@ body {
 	z-index: 10;
 	opacity: 0.05;
 }
+#csvtypesel {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 24px;
+	top: 106px;
+	background: #EEE;
+	border: 1px solid #CCC;
+}
 #options {
 	position: absolute;
 	left: 10px;
@@ -87,7 +96,7 @@ body {
 #log {
 	position: absolute;
 	left: 10px;
-	top: 140px;
+	top: 142px;
 	bottom: 50px;
 	width: 320px;
 	background: @Base000;
@@ -434,12 +443,12 @@ body {
 	}
 }
 
+
 </style>
 <script>less = {env: "development"};</script>
 <script src="./libs/less-1.3.3.min.js" ></script>
 <!-- javascript libs -->
 <script src='./libs/jquery.min.js'></script>  
-<script src='./libs/underscore-min.js'></script>
 <script src='./libs/filesaver.min.js'></script>
 <script src='./libs/papaparse.min.js'></script>
 <script src='./libs/simple_statistics.js'></script>
@@ -453,6 +462,10 @@ body {
 	<div id='options'>
 		<div id='csvdrop'>Drop CSV File Here</div>
 		<input id='csvinput' type='file' onchange='csvFileLoad()' accept="text/html"/>
+		<select id='csvtypesel'>
+			<option value='0'>1: FormID,Date,UserID,Question,Response</option>
+			<option value='1'>N: FormID,Date,UserID,Response0,Response1,...</option>
+		</select>
 	</div>
 	<div id='log'></div>
 	<div id='logactions'></div>

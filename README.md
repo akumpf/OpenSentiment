@@ -33,6 +33,22 @@ Note that OpenSentiment will infer the datatype for each row based on the format
 
 See the example_csv_data directory to get a realisitic sense for what the data looks like.
 
+## CSV Data Format (multi-response)
+
+Since many data sets often group multiple responses from a user into a single row, a multi-response CSV format is also supported. To parse data in this manner, select the N:... data type in the dropdown menu on the left.
+
+The first line of the CSV should be a header row in this form.
+
+```
+FormID,Date,UserID,Question1,Question2,...,QuestionN
+```
+
+And each subsequent row should be the appropriate response to those questions.
+
+```
+FormID,Date,UserID,Response1,Response2,...,QuestionN
+```
+
 ## Loading Data into OpenSentiment
 
 Once you have your data, simply open the index.html file (either locally, or in the latest build hosted at http://akumpf.github.io/OpenSentiment), and drag in your CSV file to corresponding box.

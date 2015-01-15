@@ -187,6 +187,15 @@ $(document).ready(function(){
 	}else{
 		log("Drop CSV file above...");
 	}
+	// --
+	$("#csvtypesel").change(function(){
+		csvtype = parseInt($("#csvtypesel").val(),10);
+		console.log("csv type changed -> "+csvtype);
+		// --
+		if(lastProcessedCSVText.length > 0){
+			processCSV(lastProcessedCSVText);
+		}
+	})
 });
 // --
 // FormID,Date,UserID,Question,Response --- TYPE, SENTIMENT,
@@ -210,6 +219,7 @@ var csv	 					= [];
 var csvHeaders 		= [];
 var csvStats 			= {};
 var csvQuestions 	= {};
+var csvtype       = 0;
 // -------
 // CRUNCH THE DATA
 // -------
@@ -245,9 +255,11 @@ function csvFileLoadedWithTxt(evt){
 }
 // --
 var p = [];
+var lastProcessedCSVText = "";
 function processCSV(csvtxt){
 	log("Ready to process.");
 	log("- - - - - - - - -");
+	lastProcessedCSVText = csvtxt;
 	// --
 	csv 					= [];
 	csvStats			= {};
@@ -280,6 +292,31 @@ function processCSV(csvtxt){
 		return;
 	}
 	csv = parsedcsv.data||[];
+	window._csv = csv;
+	// --
+	switch(csvtype){
+		case 0:
+			console.log("1 response / line. ok.");
+			break;
+		case 1:
+			console.log("N responses / line...");
+			if(csv.length < 2){err("Not enough rows for N responses / line. Should be at least 2."); return;}
+			if(csv[0].length < 4){err("Not enough columns for N responses / line. Should be at least 4."); return;}
+			var csv2  = [];
+			var hdr2  = csv[0];
+			var cols2 = csv[0].length;
+			// --
+			for(var i=1; i<csv.length; i++){
+				var r = csv[i]||[];
+				for(var j=3; j<cols2; j++){
+					csv2.push([r[0], r[1], r[2], hdr2[j], r[j]]);
+				}
+			}
+			// --
+			window._csv2 = csv2;
+			csv = csv2;
+			break;
+	}
 	// --
 	var cols = csv[0].length;
 	if(cols != CSV_EXPECTED_INPUT_COLS) err("Wrong number of columns, should be "+CSV_EXPECTED_INPUT_COLS+" -- missing something?");
@@ -367,7 +404,7 @@ function getStatsFromArray(arr, type, enumcountobj){
 	if(type == QUALTYPE_ENUM){
 		var enums = [];
 		var samps = 0;
-		_.each(enumcountobj, function(val, key){
+		$.each(enumcountobj, function(key, val){
 			enums.push({n:key, o:val});
 			samps += val;
 		});
@@ -475,7 +512,7 @@ var phraser = (function(){
 			}
 		}
 		var befarr = [];
-		_.each(before, function(val, key){
+		$.each(before, function(key, val){
 			befarr.push({t:key, o:val});
 		});
 		befarr.sort(function(a,b){return b.o-a.o;});
@@ -497,7 +534,7 @@ var phraser = (function(){
 			}
 		}
 		var befarr = [];
-		_.each(before, function(val, key){
+		$.each(before, function(key, val){
 			befarr.push({t:key, o:val});
 		});
 		befarr.sort(function(a,b){return b.o-a.o;});
@@ -515,7 +552,8 @@ var QUALTYPE_ENUM    = "t/enu";
 p.push(["Type handling", function(){
 	var qualTypeForQs = {};
 	for(var i=0; i<csv.length; i++){
-		csv[i][CSV_INDEX_DATE] = new Date(csv[i][CSV_INDEX_DATE]);
+		var d = new Date(csv[i][CSV_INDEX_DATE]);
+		csv[i][CSV_INDEX_DATE] = isNaN(d.getTime())?csv[i][CSV_INDEX_DATE]:d;
 		if((csv[i][CSV_INDEX_R]||"").length==0 || (csv[i][CSV_INDEX_R]||"").indexOf("null")==0) csv[i][CSV_INDEX_R] = "";
 		// --
 		if(!qualTypeForQs[csv[i][CSV_INDEX_Q]]) qualTypeForQs[csv[i][CSV_INDEX_Q]] = QUALTYPE_UNKNOWN;
@@ -731,13 +769,13 @@ p.push(["Calculating data stats", function(){
 		}
 	}
 	// --
-	_.each(qs, function(val, key){
+	$.each(qs, function(key, val){
 		qs[key] = $.extend(qs[key], getStatsFromArray(val.v, val.type, val.e));
 	});
 	// --
 	csvStats.qs = qs;
 	var qsArr = [];
-	_.each(qs, function(val, key){
+	$.each(qs, function(key, val){
 		qsArr.push(val);
 	});
 	// --
@@ -919,7 +957,7 @@ function htmlAllQs(){
 			html += "<div id='outq_enum_"+i+"' class='outq_enum'></div>";
 			html += "<div class='question'>"+escapeHTML(q.q)+"</div>";
 			html += "<div class='top5'>";
-			var enumcount = _.size(q.enums);
+			var enumcount = (q.enums||[]).length;
 			var used = 0;
 			for(var e=0; e<4; e++){
 				var occurs = ((q.enums[e]||{}).o||0);
@@ -1147,7 +1185,12 @@ function diveIntoPhrase(phrase, showall, dimword){
 		html += 	"<div class='meta'>";
 		html += 		"<div class='metaform' title='form'>"+escapeHTML(csv[matchRows[i]][CSV_INDEX_FORM])+"</div>";
 		html +=			"<div class='metauser' title='user'>"+escapeHTML(csv[matchRows[i]][CSV_INDEX_USER])+"</div>";		
-		html += 		"<div class='metadate' title='date'>"+MONTHS[d.getMonth()]+". "+d.getDate()+", "+d.getFullYear()+"</div>";
+		// --
+		if(d instanceof Date)
+			html += 		"<div class='metadate' title='date'>"+MONTHS[d.getMonth()]+". "+d.getDate()+", "+d.getFullYear()+"</div>";
+		else
+			html += 		"<div class='metadate' title='date'>"+d+"</div>";
+ 		// --
 		html += 	"</div>";
 		html += "</div>";
 	}
@@ -1204,7 +1247,12 @@ function exploreQData(qindex, showall){
 			 		html += 	"<div class='meta'>";
 			 		html += 		"<div class='metaform' title='form'>"+escapeHTML(csv[matchRows[i]][CSV_INDEX_FORM])+"</div>";
 			 		html +=			"<div class='metauser' title='user'>"+escapeHTML(csv[matchRows[i]][CSV_INDEX_USER])+"</div>";
-			 		html += 		"<div class='metadate' title='date'>"+MONTHS[d.getMonth()]+". "+d.getDate()+", "+d.getFullYear()+"</div>";
+					// --
+					if(d instanceof Date)
+						html += 		"<div class='metadate' title='date'>"+MONTHS[d.getMonth()]+". "+d.getDate()+", "+d.getFullYear()+"</div>";
+					else
+						html += 		"<div class='metadate' title='date'>"+d+"</div>";
+			 		// --
 			 		html += 	"</div>";
 			 		html += "</div>";
 					// --
